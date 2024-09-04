@@ -4,7 +4,7 @@ import java.math.BigDecimal;
  * @author zhao
  * @date 2024/9/4
  */
-public class CalculatorCommand extends Common {
+public class CalculatorCommand extends Command {
 
   private char curOperator;
   private BigDecimal num;

@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class UndoRedoCalculator{
   private BasicCalculator basicCalculator = new BasicCalculator();
-  private List<Common> commonList = new ArrayList<>();
+  private List<Command> commandList = new ArrayList<>();
   private int currentIndex = 0;
 
   /**
@@ -17,9 +17,9 @@ public class UndoRedoCalculator{
    * @param num
    */
   public void calculate(char curOperator, BigDecimal num){
-    Common common = new CalculatorCommand(curOperator,num,basicCalculator);
-    common.execute();
-    commonList.add(common);
+    Command command = new CalculatorCommand(curOperator,num,basicCalculator);
+    command.execute();
+    commandList.add(command);
     currentIndex++;
   }
 
@@ -30,8 +30,8 @@ public class UndoRedoCalculator{
   public void redo(int preCommandCount){
     System.out.println(String.format("Redo previous %d commands",preCommandCount));
     for(int i=0;i<preCommandCount;i++){
-      if(currentIndex < commonList.size()-1){
-        ((Common) commonList.get(currentIndex++)).execute();
+      if(currentIndex < commandList.size()-1){
+        ((Command) commandList.get(currentIndex++)).execute();
       }else {
         System.out.println("no redo commands!!");
       }
@@ -47,7 +47,7 @@ public class UndoRedoCalculator{
     for(int i=0;i<preCommandCount;i++){
       if(currentIndex>0){
         int index = --currentIndex;
-        ((Common) commonList.get(index)).reverse();
+        ((Command) commandList.get(index)).reverse();
       }else{
         System.out.println("no undo commands!!");
       }
