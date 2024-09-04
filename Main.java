@@ -8,14 +8,17 @@ public class Main {
 
   public static void main(String[] args) {
     UndoRedoCalculator calculator = new UndoRedoCalculator();
-    calculator.calculate('+',new BigDecimal(100));
-    calculator.calculate('-',new BigDecimal(50));
-    calculator.calculate('*',new BigDecimal(2));
-    calculator.calculate('/',new BigDecimal(2));
-    calculator.undo(3);//撤销前4个命令
-
-    calculator.redo(2);//再次执行前三个命令
+    calculator.execute('+',new BigDecimal(100));
+    calculator.execute('-',new BigDecimal(50));
+    calculator.execute('*',new BigDecimal(2));
+    calculator.execute('/',new BigDecimal(2));
+    calculator.reverse();
+    calculator.reverse();
+    calculator.redo();
     System.out.println("打断redo！！");
-    calculator.calculate('+',new BigDecimal(200));
+    calculator.execute('+',new BigDecimal(200));
+    calculator.reverse();
+    calculator.redo();
+    calculator.redo();//没有可重做的命令
   }
 }

@@ -6,51 +6,62 @@ import java.util.List;
  * @author zhao
  * @date 2024/9/4
  */
-public class UndoRedoCalculator{
-  private BasicCalculator basicCalculator = new BasicCalculator();
-  private List<Command> commandList = new ArrayList<>();
+public class UndoRedoCalculator extends BasicCalculator implements Command{
+
+  private List<BigDecimal> lastNumList = new ArrayList<>();//最近操作数列表
+  private List<Character> lastOptList = new ArrayList<>();//最近操作列表
   private int currentIndex = 0;
 
-  /**
-   * 计算
-   * @param curOperator
-   * @param num
-   */
-  public void calculate(char curOperator, BigDecimal num){
-    Command command = new CalculatorCommand(curOperator,num,basicCalculator);
-    command.execute();
-    commandList.add(command);
-    currentIndex++;
+  @Override
+  public void execute(char curOperator, BigDecimal num) {
+    compute(curOperator,num);
+    lastNumList.add(num);
+    lastOptList.add(curOperator);
+    currentIndex = lastOptList.size();
   }
 
-  /**
-   * 重做前几个命令
-   * @param preCommandCount
-   */
-  public void redo(int preCommandCount){
-    System.out.println(String.format("Redo previous %d commands",preCommandCount));
-    for(int i=0;i<preCommandCount;i++){
-      if(currentIndex < commandList.size()-1){
-        ((Command) commandList.get(currentIndex++)).execute();
-      }else {
-        System.out.println("no redo commands!!");
-      }
+  @Override
+  public void reverse() {
+    if(currentIndex>0){
+      System.out.println("undo previous commands");
+      int index = --currentIndex;
+      BigDecimal undoNum = lastNumList.get(index);
+      Character undoOpt = undo(lastOptList.get(index));
+      compute(undoOpt,undoNum);
+    }else{
+      System.out.println("no undo commands!!");
     }
   }
 
-  /**
-   * 撤销前几个命令
-   * @param preCommandCount
-   */
-  public void undo(int preCommandCount){
-    System.out.println(String.format("Undo previous %d commands",preCommandCount));
-    for(int i=0;i<preCommandCount;i++){
-      if(currentIndex>0){
-        int index = --currentIndex;
-        ((Command) commandList.get(index)).reverse();
-      }else{
-        System.out.println("no undo commands!!");
-      }
+  private char undo(char preOperator){
+    char undo= ' ';
+    switch (preOperator){
+      case '+':
+        undo = '-';
+        break;
+      case '-':
+        undo ='+';
+        break;
+      case '*':
+        undo = '/';
+        break;
+      case '/':
+        undo='*';
+        break;
+    }
+    return undo;
+  }
+
+  @Override
+  public void redo() {
+    if(currentIndex < lastOptList.size()){
+      System.out.println("redo command again");
+      BigDecimal redoNum = lastNumList.get(currentIndex);
+      Character redoOpt = lastOptList.get(currentIndex);
+      compute(redoOpt,redoNum);
+      currentIndex++;
+    }else {
+      System.out.println("no redo commands!!");
     }
   }
 }

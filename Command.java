@@ -1,8 +1,12 @@
+import java.math.BigDecimal;
+
 /**
  * @author zhao
  * @date 2024/9/4
  */
-public abstract class Command {
-  abstract public void execute();
-  abstract public void reverse();
+public interface Command {
+
+  void execute(char curOperator, BigDecimal num);
+  void reverse();
+  void redo();
 }

@@ -10,6 +10,7 @@ import org.omg.CORBA.PRIVATE_MEMBER;
 public class BasicCalculator {
    private BigDecimal preTotal = new BigDecimal(0);
    private int scale = 2;//默认精度为小数点后2位
+
    public void compute(char curOperator,BigDecimal num){
       BigDecimal before = preTotal;
       switch (curOperator){
@@ -27,6 +28,8 @@ public class BasicCalculator {
             break;
       }
       System.out.println(before +"" + curOperator +num+"=" + preTotal);
+
+
    }
 
 
